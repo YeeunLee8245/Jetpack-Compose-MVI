@@ -2,6 +2,7 @@ package kr.co.kumoh.d134.composemvi.moviesearch.data.remote
 
 import io.reactivex.rxjava3.core.Single
 import kr.co.kumoh.d134.composemvi.BuildConfig
+import kr.co.kumoh.d134.composemvi.moviesearch.data.remote.model.MovieDetailResponse
 import kr.co.kumoh.d134.composemvi.moviesearch.data.remote.model.MovieSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -18,5 +19,5 @@ interface MovieApi {
     fun getMovieDetail(
         @Query("i") imdbId: String,
         @Query("apikey") apikey: String = BuildConfig.ApiKey
-    )
+    ) : Single<MovieDetailResponse>
 }

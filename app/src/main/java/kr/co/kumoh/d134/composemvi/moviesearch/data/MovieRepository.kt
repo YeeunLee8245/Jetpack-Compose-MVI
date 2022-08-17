@@ -26,16 +26,27 @@ class MovieRepository(  // 정의된 DataStore 인터페이스 2개를 인자로
             }
     }
 
-    override fun addMovies(movieList: List<Movie>): Completable {
-        TODO("Not yet implemented")
+    override fun synMovieSearchResult(searchQuery: String): Single<List<Movie>> {
+        return remoteDataStore.getMovies(searchQuery)
+            .flatMap { movies -> // List<Movie>
+                // flatMap: api 순서를 지정할 때 유용함. 불러야할 api가 여러개일 때 flatMap을 순서대로 정의한다. 앞 순서가 정상 실행된 경우에만 호출됨
+                if (movies.isNotEmpty()) {
+                    addMovies(movies)   // 로컬 데베에 저장된 데이터 불러옴
+                        .andThen(
+                            Single.just(movies)
+                        )
+                } else {  // 불러올 수 있는 서버 데이터가 없음
+                    Single.error(EmptyResultSetException("No data found in Remote"))
+                }
+            }
     }
 
-    override fun synMovieSearchResult(searchQuery: String): Single<List<Movie>> {
-        TODO("Not yet implemented")
+    override fun addMovies(movieList: List<Movie>): Completable {
+        return localDataStore.addMovies(movieList)
     }
 
     override fun getMovieDetail(imdbId: String): Single<MovieDetail> {
-        TODO("Not yet implemented")
+        return remoteDataStore.getMovieDetail(imdbId)
     }
 
 }
