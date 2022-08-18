@@ -1,6 +1,8 @@
 package kr.co.kumoh.d134.composemvi.moviesearch.presentation
 
-sealed class MovieIntent {
+import kr.co.kumoh.d134.composemvi.moviesearch.base.MviIntent
+
+sealed class MovieIntent : MviIntent {
     object InitaialIntent : MovieIntent()
 
     data class SearchIntent(val query: String) : MovieIntent()

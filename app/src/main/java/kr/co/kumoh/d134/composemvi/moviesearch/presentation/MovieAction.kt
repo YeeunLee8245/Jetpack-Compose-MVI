@@ -1,6 +1,8 @@
 package kr.co.kumoh.d134.composemvi.moviesearch.presentation
 
-sealed class MovieAction {
+import kr.co.kumoh.d134.composemvi.moviesearch.base.MviAction
+
+sealed class MovieAction : MviAction{
     data class SearchAction(val query: String) : MovieAction()
 
     data class DetailAction(val imdbId: String) : MovieAction()

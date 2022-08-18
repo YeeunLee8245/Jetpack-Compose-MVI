@@ -1,8 +1,9 @@
 package kr.co.kumoh.d134.composemvi.moviesearch.presentation
 
+import kr.co.kumoh.d134.composemvi.moviesearch.base.MviResult
 import kr.co.kumoh.d134.composemvi.moviesearch.data.model.Movie
 
-sealed class MovieResult {
+sealed class MovieResult : MviResult {
     sealed class SearchResult : MovieResult() {
         abstract val query: String  // SearchResult 상속시 반드시 구현
 
