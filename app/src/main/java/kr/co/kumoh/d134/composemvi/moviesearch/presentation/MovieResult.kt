@@ -1,6 +1,6 @@
 package kr.co.kumoh.d134.composemvi.moviesearch.presentation
 
-import kr.co.kumoh.d134.composemvi.moviesearch.base.MviResult
+import kr.co.kumoh.d134.composemvi.base.MviResult
 import kr.co.kumoh.d134.composemvi.moviesearch.data.model.Movie
 
 sealed class MovieResult : MviResult {

@@ -1,6 +1,6 @@
 package kr.co.kumoh.d134.composemvi.moviesearch.presentation
 
-import kr.co.kumoh.d134.composemvi.moviesearch.base.MviState
+import kr.co.kumoh.d134.composemvi.base.MviState
 import kr.co.kumoh.d134.composemvi.moviesearch.data.model.Movie
 import kr.co.kumoh.d134.composemvi.moviesearch.data.model.MovieDetail
 import kr.co.kumoh.d134.composemvi.util.emptyString

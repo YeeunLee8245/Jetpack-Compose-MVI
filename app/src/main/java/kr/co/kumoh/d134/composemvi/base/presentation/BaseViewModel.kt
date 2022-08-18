@@ -1,4 +1,4 @@
-package kr.co.kumoh.d134.composemvi.moviesearch.base.presentation
+package kr.co.kumoh.d134.composemvi.base.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.functions.BiFunction
 import io.reactivex.rxjava3.subjects.PublishSubject
-import kr.co.kumoh.d134.composemvi.moviesearch.base.*
+import kr.co.kumoh.d134.composemvi.base.*
 
 abstract class BaseViewModel<I : MviIntent, S : MviState, A : MviAction, R : MviResult> :
     ViewModel(),
     MviViewModel<I, S> {
+
+    protected abstract val actionProcessor: MviActionProcessor<A, R>
 
     private val intentsSubjet: PublishSubject<I> = PublishSubject.create() // 구독 시점부터 발생하는 데이터 전달, subject는 스트림과 관찰자(구독자) 성격 모두 가지고 있음
     private val statesLiveData: LiveData<S> by lazy {
@@ -40,8 +42,6 @@ abstract class BaseViewModel<I : MviIntent, S : MviState, A : MviAction, R : Mvi
     abstract fun actionFromIntent(intent: I): A
 
     abstract fun intentFilter(): FlowableTransformer<I, I>
-
-    protected abstract val actionProcessor: MviActionProcessor<A, R>
 
     abstract fun reducer(): BiFunction<S, R, S>
 
