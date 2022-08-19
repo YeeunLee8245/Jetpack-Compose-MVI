@@ -12,7 +12,7 @@ abstract class BaseViewModel<I : MviIntent, S : MviState, A : MviAction, R : Mvi
     ViewModel(),
     MviViewModel<I, S> {
 
-    protected abstract val actionProcessor: MviActionProcessor<A, R>
+    protected abstract val actionProcessor: MviActionProcessor<A, R>    // 구현해야하는 인터페이스 변수
 
     private val intentsSubjet: PublishSubject<I> = PublishSubject.create() // 구독 시점부터 발생하는 데이터 전달, subject는 스트림과 관찰자(구독자) 성격 모두 가지고 있음
     private val statesLiveData: LiveData<S> by lazy {
@@ -25,7 +25,6 @@ abstract class BaseViewModel<I : MviIntent, S : MviState, A : MviAction, R : Mvi
     override fun processIntents(intents: Observable<I>) {
         intents.subscribe(intentsSubjet)
     }
-
 
     private fun compose(): Flowable<S> {
         return intentsSubjet

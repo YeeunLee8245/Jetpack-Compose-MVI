@@ -76,4 +76,17 @@ class RemoteMovieDataStore(private val movieApi: MovieApi) : MovieDataStore {
     override fun addMovieDetail(movie: MovieDetail): Completable {  // LocalMovieDataStore에서만 구현
         return Completable.error(UnsupportedOperationException("Can't add to Remote"))
     }
+
+    // history는 로컬로만 지원함
+    override fun saveSearchHistory(list: List<String>): Completable {
+        return Completable.error(UnsupportedOperationException("Search history not supported in remote"))
+    }
+
+    override fun saveSearchHistory(currentSearch: String): Completable {
+        return Completable.error(UnsupportedOperationException("Search history not supported in remote"))
+    }
+
+    override fun getSearchHistory(): Single<List<String>> {
+        return Single.error(UnsupportedOperationException("Search history not supported in remote"))
+    }
 }

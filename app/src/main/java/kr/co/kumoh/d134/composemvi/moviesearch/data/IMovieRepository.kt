@@ -13,5 +13,9 @@ interface IMovieRepository {
 
     fun synMovieSearchResult(searchQuery: String): Single<List<Movie>>  // TODO: 무슨 역할? 결과 출력 상황?
 
-    fun getMovieDetail(imdbId: String): Single<MovieDetail>
+    fun getMovieDetail(imdbId: String): Flowable<MovieDetail>
+
+    fun saveSearchResult(list: List<String>): Completable
+
+    fun getSearchHistory(): Single<List<String>>
 }
