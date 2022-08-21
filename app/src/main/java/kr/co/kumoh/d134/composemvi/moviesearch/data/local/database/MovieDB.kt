@@ -5,13 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import retrofit2.Converter
 
 @Database(
     entities = [MovieEntity::class, SearchHistoryEntity::class],
     version = 2
 ) // class는 코틀린을 반환하는 api, class.java는 자바를 반환하는 api 객체 얻음, 각 언어의 요소 핸들링 가능
-@TypeConverters(Converter::class)   // TODO: http에서 데이터 받아서 사용하기 때문
+@TypeConverters(Converters::class)  // Entity에서 기본 자료형이 아닌 타입을 사용하면 에러 발생하기 때문에 room database에서 data class를 사용할 수 있도록 Converter 등록
 abstract class MovieDB : RoomDatabase() {
     abstract fun movieDao(): MovieDao
 

@@ -3,6 +3,7 @@ package kr.co.kumoh.d134.composemvi.moviesearch.data
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
+import androidx.room.rxjava3.EmptyResultSetException
 import kr.co.kumoh.d134.composemvi.moviesearch.data.model.Movie
 import kr.co.kumoh.d134.composemvi.moviesearch.data.model.MovieDetail
 

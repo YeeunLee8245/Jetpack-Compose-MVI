@@ -13,7 +13,7 @@ import retrofit2.create
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class MovieApiFactory {
+object MovieApiFactory {
     fun makeMovieApi(): MovieApi {
         val okHttpClient = makeOkHttpClient(
             makeLoggingInterceptor()
