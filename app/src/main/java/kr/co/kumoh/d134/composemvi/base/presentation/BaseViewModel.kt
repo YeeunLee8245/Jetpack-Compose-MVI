@@ -22,8 +22,12 @@ abstract class BaseViewModel<I : MviIntent, S : MviState, A : MviAction, R : Mvi
         compose()
     }
 
-    override fun processIntents(intents: Observable<I>) {
+    override fun processIntents(intents: Observable<I>) {   //  받은 인텐트 발행 시작
         intents.subscribe(intentsSubjet)
+    }
+
+    override fun states(): LiveData<S> {
+        return statesLiveData
     }
 
     private fun compose(): Flowable<S> {
