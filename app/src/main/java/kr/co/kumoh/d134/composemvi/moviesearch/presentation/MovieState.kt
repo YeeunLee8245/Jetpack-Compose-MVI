@@ -12,14 +12,14 @@ data class MovieState(
     val isLoading: Boolean = false,
     val detail: MovieDetail? = null,
     val searchHistory: List<String> = emptyList(),
-    val skipSplash: Boolean = false
+    val skipSplash: Boolean = false     // splash 스킵 여부 설정 지정
 ) : MviState {
     companion object {
         fun initialState(): MovieState = MovieState() // MoviesSate 초기화, 명확한 의미 전달을 위해 Companion object로 표현
     }
 }
 
-fun MovieState.isIdleState(): Boolean =  // data class여도 확장함수 가능
+fun MovieState.isIdleState(): Boolean =  // data class여도 확장함수 가능, 가장 초기상태(가장 초기의 상태)
     query.isBlank() && movies.isEmpty() && error == null && !isLoading && detail == null
 
 fun MovieState.isDetailState(): Boolean =

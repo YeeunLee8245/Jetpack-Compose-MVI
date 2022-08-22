@@ -12,7 +12,7 @@ import kr.co.kumoh.d134.composemvi.moviesearch.data.local.database.SearchHistory
 import kr.co.kumoh.d134.composemvi.moviesearch.data.model.Movie
 import kr.co.kumoh.d134.composemvi.moviesearch.data.model.MovieDetail
 
-class LocalMovieDataStore(
+class LocalMovieDataStore(  // remote에서 응답을 받은 결과가 있고난 후, 사용자가 remote에 없는 결과를 검색할 시, 이전의 캐시값 바로 반환
     private val movieDao: MovieDao, // TODO: MovieDao 어떻게 정의해서 넣는지 구현부 확인
     private val searchDao: SearchDao
 ) : MovieDataStore {
