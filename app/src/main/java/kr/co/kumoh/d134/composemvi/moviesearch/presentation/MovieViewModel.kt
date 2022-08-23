@@ -6,6 +6,7 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.FlowableTransformer
 import io.reactivex.rxjava3.functions.BiFunction
 import kr.co.kumoh.d134.composemvi.base.presentation.BaseViewModel
+import timber.log.Timber
 
 class MovieViewModel @ViewModelInject constructor(
     override val actionProcessor: MovieProcessor
@@ -38,6 +39,7 @@ class MovieViewModel @ViewModelInject constructor(
     override fun reducer(): BiFunction<MovieState, MovieResult, MovieState> =   // TODO: 활용부 확인. 어떻게 result 정보가 들어감?
         BiFunction { previousState, result ->   // 인자 2개를 받아 특정 결과를 반환하는 apply 메소드만 있는 함수형 인터페이스
             //~ 연산 코드를 간결하게 만들어준다
+            Timber.d("reducer 작동: $previousState , $result")
             when (result) { // result는 is에 명시된 타입과 동일하기 때문에 해당 타입이 가지고있는 프로퍼티만 활용 가능
                 is MovieResult.InitResult -> previousState.copy(searchHistory = result.searchHistory)   // 과거 기록 세팅
                 is MovieResult.SearchResult.InProgress -> previousState.copy(   // 검색 결과 로딩 중

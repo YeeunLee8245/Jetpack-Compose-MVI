@@ -11,7 +11,7 @@ interface MovieApi {
     @GET("/")
     fun searchMovies(
         @Query("s") query: String,
-        @Query("type") type: String = "moive",
+        @Query("type") type: String = "movie",
         @Query("apikey") apikey: String = BuildConfig.ApiKey
     ): Single<MovieSearchResponse> // Rxjava에서 통지할 데이터가 반드시 1건(에러 통지 포함), 통지와 완료 나누어져 있지X, 데이터 통지 or 완료 통지
 

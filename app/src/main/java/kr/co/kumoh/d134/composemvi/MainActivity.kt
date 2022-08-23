@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MoviesTheme {
-                MovieScreen(liveData, ::search, ::click)
+                MovieScreen(liveData, ::search, ::click)    // 결과적으로 liveData에 MovieIntent 타입의 데이터(Observable)가 전달된다!
             }
         }
 
