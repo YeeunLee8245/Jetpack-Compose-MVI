@@ -14,7 +14,7 @@ abstract class BaseViewModel<I : MviIntent, S : MviState, A : MviAction, R : Mvi
 
     protected abstract val actionProcessor: MviActionProcessor<A, R>    // 구현해야하는 인터페이스 변수
 
-    private val intentsSubjet: PublishSubject<I> = PublishSubject.create() // 구독 시점부터 발생하는 데이터 전달, subject는 스트림과 관찰자(구독자) 성격 모두 가지고 있음
+    private val intentsSubject: PublishSubject<I> = PublishSubject.create() // 구독 시점부터 발생하는 데이터 전달, subject는 스트림과 관찰자(구독자) 성격 모두 가지고 있음
     private val statesLiveData: LiveData<S> by lazy {
         LiveDataReactiveStreams.fromPublisher(statesObservable)
     }
@@ -23,7 +23,7 @@ abstract class BaseViewModel<I : MviIntent, S : MviState, A : MviAction, R : Mvi
     }
 
     override fun processIntents(intents: Observable<I>) {   //  받은 인텐트 발행 시작
-        intents.subscribe(intentsSubjet)
+        intents.subscribe(intentsSubject)    // intents로 발행한 데이터(item) intentsSubject로 (인자로)넘겨줌
     }
 
     override fun states(): LiveData<S> {
@@ -31,7 +31,7 @@ abstract class BaseViewModel<I : MviIntent, S : MviState, A : MviAction, R : Mvi
     }
 
     private fun compose(): Flowable<S> {
-        return intentsSubjet
+        return intentsSubject
             .toFlowable(BackpressureStrategy.LATEST)    // 최신순으로 유지
             .compose(intentFilter())    // flowable 변형(기존의 전체 스트림에 붙임)
             .map(this::actionFromIntent)    // 각 item에 적용할 operation

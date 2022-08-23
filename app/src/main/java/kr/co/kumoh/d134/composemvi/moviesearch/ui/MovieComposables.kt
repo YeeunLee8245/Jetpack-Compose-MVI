@@ -1,5 +1,6 @@
 package kr.co.kumoh.d134.composemvi.moviesearch.ui
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -43,9 +45,10 @@ import kr.co.kumoh.d134.composemvi.moviesearch.presentation.isDetailState
 import kr.co.kumoh.d134.composemvi.moviesearch.presentation.isIdleState
 import kr.co.kumoh.d134.composemvi.moviesearch.presentation.isLoading
 import timber.log.Timber
+import java.util.*
 
 @Composable
-fun MovieScreen(
+fun MovieScreen(    // 원본 코드에는 Movie's'Screen이라고 기재
     stateLiveData: LiveData<MovieState>,
     onSearch: (String) -> Unit, // TODO: onSearch 구현부 확인
     onMovieClick: (String) -> Unit
@@ -68,7 +71,7 @@ fun MovieScreen(
                 SearchState.SearchTyped(movieState.query)   // 타이핑 완료후 검색
             }
             else -> {
-                SearchState.Icon
+                SearchState.Icon // 검색을 위한 액션이 없고 Icon을 눌러야 액션이 시작되는 상태
             }
         }
 
@@ -120,7 +123,7 @@ fun IdleScreen(searchHistory: List<String>, onSearch: (String) -> Unit = {}) {
                 Text("Below are your past searches")
             }
 
-            LazyVerticalGrid(cells = GridCells.Fixed(3)) {  // 3열
+            LazyVerticalGrid(cells = GridCells.Fixed(3)) {  // 세로축 중심으로 동작, 3열 고정(Horizontal일 떄는 행 개수 고정)
                 items(searchHistory) { item ->
                     Column(modifier = Modifier.padding(5.dp)) {
                         Box(
@@ -234,7 +237,13 @@ fun MovieItemCard(modifier: Modifier = Modifier, movie: Movie) {    // 검색 �
                     }
             )
             Text(
-                text = "Type: ${movie.type.capitalize()}",
+                text = "Type: ${
+                    movie.type.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase( // 문자열에서 첫 문자 대문자로
+                            Locale.getDefault()
+                        ) else it.toString()
+                    }
+                }",
                 style = TextStyle.Default.copy(fontSize = 10.sp),
                 modifier = Modifier
                     .padding(2.dp)
@@ -257,7 +266,7 @@ fun MovieItemCard(modifier: Modifier = Modifier, movie: Movie) {    // 검색 �
             )
             Text(
                 text = "IMDB: ${movie.imdbID}",
-                style = TextStyle.Default.copy(fontSize = 10.sp),
+                style = TextStyle.Default.copy(fontSize = 10.sp),   // TextStyle을 반환하는 Default에서 fontSize만 변경. data class가 아닌 일반 클래스도 copy해서 쓰는군
                 modifier = Modifier
                     .padding(2.dp)
                     .constrainAs(itemImdb) {
@@ -271,7 +280,7 @@ fun MovieItemCard(modifier: Modifier = Modifier, movie: Movie) {    // 검색 �
 }
 
 
-@OptIn(ExperimentalComposeApi::class)   // transition, CrpssfadeTramsition api 사용 가능
+@OptIn(ExperimentalCoilApi::class)   // transition, CrpssfadeTramsition api 사용 가능
 @Composable
 fun DetailScreen(movieDetail: MovieDetail) {
     ConstraintLayout {
@@ -283,7 +292,7 @@ fun DetailScreen(movieDetail: MovieDetail) {
         val itemPlot = createRef()
 
         Image(
-            painter = rememberImagePainter(
+            painter = rememberImagePainter( // data를 통해 ImagePainter를 반환함
                 data = movieDetail.poster,
                 builder = {
                     transition(CrossfadeTransition())   // 현재 drawable에서 새 drawable로 전환 (cross fade 사용: 오버랩 되면서 바뀜)
@@ -298,7 +307,7 @@ fun DetailScreen(movieDetail: MovieDetail) {
                     end.linkTo(parent.end)
                 }
                 .fillMaxWidth()
-                .heightIn(max = 500.dp)
+                .heightIn(max = 500.dp) // 최대 사이즈 지정
         )
 
         Text(
@@ -313,7 +322,7 @@ fun DetailScreen(movieDetail: MovieDetail) {
                 .padding(8.dp)
         )
         Text(
-            text = "Type: ${movieDetail.type.capitalize()}",
+            text = "Type: ${movieDetail.type.capitalize(Locale.ROOT)}",
             style = TextStyle.Default.copy(fontSize = 15.sp),
             modifier = Modifier
                 .constrainAs(itemType) {
@@ -356,7 +365,7 @@ fun DetailScreen(movieDetail: MovieDetail) {
 }
 
 @Composable
-fun LoadingScreen() {
+fun LoadingScreen() {   // Interactive Mode 눌러야 시작
     CircularProgressIndicator(
         Modifier
             .fillMaxSize()
@@ -444,7 +453,8 @@ fun SearchScreen(hint: String, onSearch: (String) -> Unit) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(5.dp)) {
+                .padding(5.dp)
+        ) {
             Column {
                 Button(modifier = Modifier.padding(5.dp), onClick = {
                     onSearch(typedText.value.text)
@@ -468,7 +478,7 @@ fun SearchScreen(hint: String, onSearch: (String) -> Unit) {
 
 @Composable
 fun Splash(
-    isPlaying: MutableState<Boolean> = remember { mutableStateOf(false) }
+    isPlaying: MutableState<Boolean> = remember { mutableStateOf(false) }   // false로 default 세팅
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_animation_jetpack))
     val progress by animateLottieCompositionAsState(composition = composition)  //  조건 없이 lottie를 재생시키기만 할 것, 조건이 붙는다면 LottieAnimatable 활용 필요
@@ -511,6 +521,42 @@ fun Splash(
 sealed class SearchState(val titlebarText: String) {    // 인자값 X, data class 성격 띄고있음
     object Icon : SearchState(SEARCH_HINT)
     data class Typing(val typedText: String = "Typing...") : SearchState(typedText) // 타이핑 중
-    data class SearchTyped(val typedText: String) : SearchState(typedText)  // TODO:
-    data class Detail(val movieTitle: String) : SearchState(movieTitle) // TODO:
+    data class SearchTyped(val typedText: String) : SearchState(typedText)  // 검색을 위한 타이핑 완료(검색 시작)
+    data class Detail(val movieTitle: String) : SearchState(movieTitle) // 영화 상세정보 클릭
+}
+
+@Composable
+@Preview
+fun loadingPreview() {
+    LoadingScreen()
+}
+
+@Composable
+@Preview
+fun appbarPreview() {
+    Appbar(searchState = SearchState.Icon, onSearch = {})
+}
+
+@Composable
+@Preview
+fun listPreview() {
+    ListScreen(movieList = listOf(
+        Movie(
+            title = "dsdad"
+        )
+    ), onMovieClick = {})
+}
+
+@Composable
+@Preview
+fun searchPreview() {
+    SearchScreen("hint") {
+        Log.d("searched", it)
+    }
+}
+
+@Composable
+@Preview
+fun errorPreview() {
+    ErrorScreen(Exception("Unknown"))
 }

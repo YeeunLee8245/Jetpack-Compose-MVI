@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kr.co.kumoh.d134.composemvi.moviesearch.data.IMovieRepository
 import kr.co.kumoh.d134.composemvi.moviesearch.data.MovieDataStore
@@ -40,7 +41,7 @@ object DataModule {
 }
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(ApplicationComponent::class)
 object AppDataModule {
     @Provides
     @Singleton
