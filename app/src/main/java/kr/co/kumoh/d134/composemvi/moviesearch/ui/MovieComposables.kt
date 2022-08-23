@@ -484,7 +484,7 @@ fun Splash(
     val progress by animateLottieCompositionAsState(composition = composition)  //  조건 없이 lottie를 재생시키기만 할 것, 조건이 붙는다면 LottieAnimatable 활용 필요
 
     ConstraintLayout(modifier = Modifier
-        .fillMaxWidth()
+        .fillMaxSize()  // 최대크기(가로/세로 특정X)
         .semantics { testTag = "splash" }) { // 시멘틱: UI 요소에 의미부여 역할. UI 계층 구조 형v
         val lottie = createRef()    // constratingLayout 내에 할당됨
         val credit = createRef()
@@ -514,8 +514,8 @@ fun Splash(
         )
     }
 
-    isPlaying.value =
-        progress < 1f // (애니메이션 진행정도(1f=100%))값 바뀌면 리컴포지션(remember 객체가 정의된 컴포저블에서) => 진행완료시 false
+    isPlaying.value =   // TODO: 빨리 테스트하려고 바꿈
+        progress < 0.1f // (애니메이션 진행정도(1f=100%))값 바뀌면 리컴포지션(remember 객체가 정의된 컴포저블에서) => 진행완료시 false
 }
 
 sealed class SearchState(val titlebarText: String) {    // 인자값 X, data class 성격 띄고있음

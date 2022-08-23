@@ -7,7 +7,7 @@ import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.functions.BiFunction
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kr.co.kumoh.d134.composemvi.base.*
-
+// 여기선 Movie 유형 하나밖에 없어서 MovieIntent 식으로 들어가지만 여러 유형일때 00Intent < 이런 식으로 들어가야할 것 => 베이스의 의미
 abstract class BaseViewModel<I : MviIntent, S : MviState, A : MviAction, R : MviResult> :
     ViewModel(),
     MviViewModel<I, S> {
