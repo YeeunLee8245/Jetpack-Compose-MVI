@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun intents(): Observable<MovieIntent> {
+    fun intents(): Observable<MovieIntent> {    // intent 초기화하고 넘겨제
         return Observable.merge(
             Observable.defer {
                 Observable.just(

@@ -12,7 +12,7 @@ sealed class MovieResult : MviResult {
 
         data class Failure(val error: Throwable, override val query: String) : SearchResult()
 
-        data class InProgress(override val query: String) : SearchResult()
+        data class InProgress(override val query: String) : SearchResult()  // 검색 로딩 중
     }
 
     sealed class LoadDetailResult : MovieResult() { // 검색해서 들어간 영화 상세 설명 출력 상태일 때
@@ -24,7 +24,7 @@ sealed class MovieResult : MviResult {
         data class Failure(val error: Throwable, override val imdbId: String) :
             LoadDetailResult()
 
-        data class InProgress(override val imdbId: String) : LoadDetailResult()
+        data class InProgress(override val imdbId: String) : LoadDetailResult() // 상세화면 로딩 중
     }
 
     object ClearDetailResult : MovieResult()    // TODO: 영화 상세 설명 초기화 상태일 때

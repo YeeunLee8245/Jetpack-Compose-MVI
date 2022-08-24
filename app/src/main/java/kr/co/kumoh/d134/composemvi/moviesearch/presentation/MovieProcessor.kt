@@ -6,14 +6,14 @@ import kr.co.kumoh.d134.composemvi.base.presentation.ISchedulerProvider
 import kr.co.kumoh.d134.composemvi.base.presentation.MviActionProcessor
 import kr.co.kumoh.d134.composemvi.moviesearch.data.IMovieRepository
 
-open class MovieProcessor(
+class MovieProcessor(
     private val repository: IMovieRepository,
     override val schedulerProvider: ISchedulerProvider  // MviActionProcessor에서 구현해줘야하기 때문
 ) : MviActionProcessor<MovieAction, MovieResult> {
 
     // 검색, 상세정보 확인, 상세정보 초기화, 검색 결과 초기화를 한 Stream으로 만듦
     override fun transformFromAction(): FlowableTransformer<MovieAction, MovieResult> =
-        FlowableTransformer { actionFlowable -> // upstream
+        FlowableTransformer { actionFlowable -> // TODO: 3. upstream: actionFromIntent()로 받은 action 들어감, Action으로 Result가 발생한다
             actionFlowable.publish { shared ->  // publish를 이용하여 connectableObservable로 만들어준 후 connect()호출해야 구독 후 데이터 발행 가능
                 Flowable.merge( // shared: publish가 적용된 Flowable 객체
                     shared.ofType(MovieAction.SearchAction::class.java).compose(searchMovies()),   // ofType(특정 타입만 필터),compose(앞선 Observable에 인자 Observable을 합쳐서 새 Observable을 만듦)
@@ -71,7 +71,7 @@ open class MovieProcessor(
                     .subscribeOn(schedulerProvider.io())
                     .observeOn(schedulerProvider.ui())
                     .startWithItem(
-                        MovieResult.LoadDetailResult.InProgress(action.imdbId)
+                        MovieResult.LoadDetailResult.InProgress(action.imdbId)  // 검색 결과 로딩 중
                     )
             }
         }

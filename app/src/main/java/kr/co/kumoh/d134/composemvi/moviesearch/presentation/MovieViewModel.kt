@@ -13,7 +13,7 @@ class MovieViewModel @ViewModelInject constructor(
 ) :
     BaseViewModel<MovieIntent, MovieState, MovieAction, MovieResult>() {
 
-    override fun intentFilter(): FlowableTransformer<MovieIntent, MovieIntent> {
+    override fun intentFilter(): FlowableTransformer<MovieIntent, MovieIntent> {    // TODO: 1. 첫번째로 사용자의 Intent가 들어온다.
         return FlowableTransformer { intents ->
             intents.publish { shared ->
                 Flowable.merge<MovieIntent>(
@@ -26,18 +26,18 @@ class MovieViewModel @ViewModelInject constructor(
         }
     }
 
-    override fun actionFromIntent(intent: MovieIntent): MovieAction {   //  intent에서 발생된 action // TODO: action 다음은? 활용부 확인
+    override fun actionFromIntent(intent: MovieIntent): MovieAction {   //  intent에서 발생된 action // TODO: 2. compose()로 인해, Intent로 Action이 발생한다.
         return when (intent) {
             is MovieIntent.InitaialIntent -> MovieAction.InitAction
-            is MovieIntent.SearchIntent -> MovieAction.SearchAction(intent.query)
+            is MovieIntent.SearchIntent -> MovieAction.SearchAction(intent.query)   // 검색 action(검색하려는 query 포함)
             is MovieIntent.ClickIntent -> MovieAction.DetailAction(intent.imdbId)
             is MovieIntent.ClearClickIntent -> MovieAction.ClearDetailAction    // TODO: 어느 시점에 작동?
             is MovieIntent.SaveSearchHistory -> MovieAction.SaveSearchHistory(intent.searchHistory)
         }
     }
 
-    override fun reducer(): BiFunction<MovieState, MovieResult, MovieState> =   // TODO: 활용부 확인. 어떻게 result 정보가 들어감?
-        BiFunction { previousState, result ->   // 인자 2개를 받아 특정 결과를 반환하는 apply 메소드만 있는 함수형 인터페이스
+    override fun reducer(): BiFunction<MovieState, MovieResult, MovieState> =   // reducer는 observable에게 2번째 인자(MovieResult) 받음
+        BiFunction { previousState, result ->   // 인자 2개를 받아 특정 결과를 반환하는 apply 메소드만 있는 함수형 인터페이스, previousState는 초기화 세팅된 state
             //~ 연산 코드를 간결하게 만들어준다
             Timber.d("reducer 작동: $previousState , $result")
             when (result) { // result는 is에 명시된 타입과 동일하기 때문에 해당 타입이 가지고있는 프로퍼티만 활용 가능

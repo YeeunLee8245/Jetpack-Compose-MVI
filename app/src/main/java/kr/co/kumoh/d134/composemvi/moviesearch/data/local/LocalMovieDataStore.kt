@@ -36,7 +36,7 @@ class LocalMovieDataStore(  // remote에서 응답을 받은 결과가 있고난
     }
 
     override fun getMovies(searchQuery: String): Single<List<Movie>> {  // subscribe할 때(defer 작용) just로 갱신하고 바로 데이터 생성
-        return movieDao.getMovies(searchQuery)
+        return movieDao.getMovies(searchQuery)  //  로컬 데이터 볼러와서 매칭
             .map { list ->
                 list.map {
                     Movie(

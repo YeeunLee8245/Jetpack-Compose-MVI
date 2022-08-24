@@ -13,29 +13,29 @@ class MovieRepository(  // 정의된 DataStore 인터페이스 2개를 인자로
 ) : IMovieRepository {
     override fun getMovies(searchQuery: String): Flowable<List<Movie>> {    // 검색 결과 내부 db에서 먼저 찾기. 없을 시 원격으로 찾기
         return localDataStore.getMovies(searchQuery)
-            .map {  // it: List<Movie>, emit(발행)된 결과 and map은 이 함수의 결과를 반환함
+            .map {  // it: List<Movie>(로컬 데이터), emit(발행)된 결과 and map은 이 함수의 결과를 반환함
                 if (it.isNullOrEmpty()) {
-                    throw EmptyResultSetException("Movies matching the query isn't in db")
+                    throw EmptyResultSetException("Movies matching the query isn't in db")  // 디비에 데이터 없음
                 } else {
                     it
                 }
             }   // map은 Single<List<Movie>>를 반환하기 때문에 Flowable 타입으로 변환해줘야함
             .mergeWith(synMovieSearchResult(searchQuery))   // 여러 Single(. 앞 값과 인자 값(Single) 합침)을 하나의 Flowable로 결합
             .onErrorResumeNext {    // it: Trowable and 오류를 알리지 않고 함수를 통해 현재 Flowable의 Publisher로 흐름 재개
-                synMovieSearchResult(searchQuery)   // TODO: 무슨 역할?
+                synMovieSearchResult(searchQuery)   // mergeWith 이상 단에서 오류나면 자체적으로 Flowable 변환
                     .toFlowable()   // Single을 Flowablw로 변환
             }
     }
 
-    override fun synMovieSearchResult(searchQuery: String): Single<List<Movie>> {
+    override fun synMovieSearchResult(searchQuery: String): Single<List<Movie>> {   // 로컬 데베를 리모트(원격)로 갱신해주는 역할 & stream 데이터를 리모트 데이터로 세팅
         return remoteDataStore.getMovies(searchQuery)
             .flatMap { movies -> // List<Movie>
                 // flatMap: api 순서를 지정할 때 유용함(내부 아이템들은 순서 X(iterable일 때만 주의하면 될듯)). 불러야할 api가 여러개일 때 flatMap을 순서대로 정의한다. 앞 순서가 정상 실행된 경우에만 호출됨
                 if (movies.isNotEmpty()) {  // 원격에 데이터 있을 때
-                    addMovies(movies)   // 로컬 데베에 데이터 저장
+                    addMovies(movies)   // 로컬 데베에 데이터 저장(갱신)
                         .andThen(localDataStore.saveSearchHistory(searchQuery)) // 검색 기록도 로컬에 저장
                         .andThen(
-                            Single.just(movies) // TODO: 반환 이유? 테스트 용도?
+                            Single.just(movies) // 리모트 데이터 세팅(사용자에게 출력해주기 위해)
                         )
                 } else {  // 불러올 수 있는 서버 데이터가 없음
                     Single.error(EmptyResultSetException("No data found in Remote"))
