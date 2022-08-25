@@ -36,6 +36,7 @@ class MovieViewModel @ViewModelInject constructor(
         }
     }
 
+    // TODO: 5. Reducer은 Intent가 Transformer를 이루고 Transformer가 reduce를 이룬 것을 처리하여 State를 만드는 메카니즘이다.
     override fun reducer(): BiFunction<MovieState, MovieResult, MovieState> =   // reducer는 observable에게 2번째 인자(MovieResult) 받음
         BiFunction { previousState, result ->   // 인자 2개를 받아 특정 결과를 반환하는 apply 메소드만 있는 함수형 인터페이스, previousState는 초기화 세팅된 state
             //~ 연산 코드를 간결하게 만들어준다
