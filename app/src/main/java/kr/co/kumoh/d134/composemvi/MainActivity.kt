@@ -60,14 +60,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun click(imdbId: String) {
-        clickPublisher.onNext(MovieIntent.ClickIntent(imdbId))
+        clickPublisher.onNext(MovieIntent.ClickIntent(imdbId))  // 특정 영화 클릭
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     override fun onBackPressed() {
         val state = liveData.value
         if (state != null && state.isDetailState()) {
-            clearClickPublisher.onNext(MovieIntent.ClearClickIntent)
+            clearClickPublisher.onNext(MovieIntent.ClearClickIntent)    // 상세정보 화면에서 없앰
         } else {
             if (state?.query != null && searchHistory.contains(state.query)) {
                 searchHistory.remove(state.query)

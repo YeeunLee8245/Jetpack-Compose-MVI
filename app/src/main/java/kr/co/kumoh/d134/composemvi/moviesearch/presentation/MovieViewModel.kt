@@ -30,8 +30,8 @@ class MovieViewModel @ViewModelInject constructor(
         return when (intent) {
             is MovieIntent.InitaialIntent -> MovieAction.InitAction
             is MovieIntent.SearchIntent -> MovieAction.SearchAction(intent.query)   // 검색 action(검색하려는 query 포함)
-            is MovieIntent.ClickIntent -> MovieAction.DetailAction(intent.imdbId)
-            is MovieIntent.ClearClickIntent -> MovieAction.ClearDetailAction    // TODO: 어느 시점에 작동?
+            is MovieIntent.ClickIntent -> MovieAction.DetailAction(intent.imdbId)   // 특정 영화 클릭
+            is MovieIntent.ClearClickIntent -> MovieAction.ClearDetailAction    //  상세정보 화면에서 없앰
             is MovieIntent.SaveSearchHistory -> MovieAction.SaveSearchHistory(intent.searchHistory)
         }
     }
